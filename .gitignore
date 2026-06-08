@@ -1,0 +1,25 @@
+# Build output
+**/target/
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# Maven wrapper
+mvnw
+mvnw.cmd
+.mvn/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes
+data/
+log/
+
+# Spring Boot
+*.log
