@@ -1,7 +1,8 @@
 package gov.iti.jets.consumerservice.config;
 
 import org.springframework.amqp.core.*;
-import org.springframework.beans.factory.BeanRegistrarDslMarker;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,5 +27,10 @@ public class RabbitMQConfig {
                 .bind(orderQueue())
                 .to(orderExchange())
                 .with("order.routing.key");
+    }
+
+    @Bean
+    MessageConverter messageConverter() {
+        return new JacksonJsonMessageConverter();
     }
 }
