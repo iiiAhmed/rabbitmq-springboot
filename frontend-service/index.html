@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Service</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --border: rgba(0,0,0,0.1);
+      --border-strong: rgba(0,0,0,0.2);
+      --text-primary: #1a1a18;
+      --text-secondary: #5f5e5a;
+      --text-tertiary: #9a9893;
+      --success-bg: #eaf3de;
+      --success-text: #3b6d11;
+      --success-border: rgba(59,109,17,0.25);
+      --error-bg: #fcebeb;
+      --error-text: #a32d2d;
+      --error-border: rgba(163,45,45,0.25);
+      --info-bg: #e8f0fe;
+      --info-text: #1a56db;
+      --info-border: rgba(26,86,219,0.25);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .subtitle code {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      background: rgba(0,0,0,0.05);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+    }
+
+    .field { margin-bottom: 1.25rem; }
+    .field:last-of-type { margin-bottom: 0; }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    label i { font-size: 15px; }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 9px 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 0.5px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input:focus {
+      border-color: rgba(0,0,0,0.4);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+    }
+
+    input::placeholder { color: var(--text-tertiary); }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .row .field { margin-bottom: 0; }
+
+    hr {
+      border: none;
+      border-top: 0.5px solid var(--border);
+      margin: 1.25rem 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      border: 0.5px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    button:hover { background: var(--bg); }
+    button:active { transform: scale(0.98); }
+    button.loading { opacity: 0.6; pointer-events: none; }
+
+    .toast {
+      margin-top: 1rem;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.success {
+      display: flex;
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 0.5px solid var(--success-border);
+    }
+
+    .toast.error {
+      display: flex;
+      background: var(--error-bg);
+      color: var(--error-text);
+      border: 0.5px solid var(--error-border);
+    }
+
+    .history { margin-top: 1.5rem; }
+
+    .history-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .log { display: flex; flex-direction: column; gap: 8px; }
+
+    .log-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      font-size: 13px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .log-left { display: flex; align-items: center; gap: 8px; }
+
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--success-text);
+      flex-shrink: 0;
+    }
+
+    .dot.consumed { background: var(--info-text); }
+
+    .log-name { font-weight: 500; }
+    .log-qty  { color: var(--text-secondary); }
+    .log-time { color: var(--text-tertiary); font-family: 'DM Mono', monospace; font-size: 11px; }
+
+    .section-divider {
+      margin-top: 2.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--text-tertiary);
+      font-size: 13px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <p class="eyebrow"><i class="ti ti-brand-rabbitmq"></i> order-service · localhost:8081</p>
+    <h1>Place an order</h1>
+    <p class="subtitle">
+      Publishes to <code>order.exchange</code> via RabbitMQ
+    </p>
+
+    <div class="card">
+      <div class="field">
+        <label for="item-input">
+          <i class="ti ti-package"></i> Item name
+        </label>
+        <input id="item-input" type="text" placeholder="e.g. Laptop, Mouse, Keyboard" />
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="qty-input">
+            <i class="ti ti-number"></i> Quantity
+          </label>
+          <input id="qty-input" type="number" min="1" value="1" />
+        </div>
+        <div class="field">
+          <label for="id-input">
+            <i class="ti ti-id"></i> Order ID
+          </label>
+          <input id="id-input" type="text" placeholder="auto" />
+        </div>
+      </div>
+
+      <hr />
+
+      <button id="submit-btn" onclick="placeOrder()">
+        <i class="ti ti-send"></i> Place order
+      </button>
+
+      <div class="toast" id="toast"></div>
+    </div>
+
+    <div class="history" id="history" style="display:none;">
+      <p class="history-title">
+        <i class="ti ti-clock"></i> Sent this session
+      </p>
+      <div class="log" id="log"></div>
+    </div>
+
+    <!-- Received Messages Section -->
+    <p class="eyebrow section-divider"><i class="ti ti-download"></i> consumer-service · localhost:8082</p>
+    <h1>Received orders</h1>
+    <p class="subtitle">
+      Consumed from <code>order.queue</code> via RabbitMQ
+    </p>
+
+    <div class="card">
+      <div class="history-title">
+        <i class="ti ti-inbox"></i> Messages received by consumer
+      </div>
+      <div class="log" id="received-log">
+        <div class="empty-state" id="empty-state">
+          <i class="ti ti-inbox-off"></i> No messages received yet
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let counter = 1;
+
+    function genId() {
+      return 'ORD-' + String(counter++).padStart(3, '0');
+    }
+
+    function showToast(type, msg) {
+      const t = document.getElementById('toast');
+      t.className = 'toast ' + type;
+      t.innerHTML = type === 'success'
+        ? '<i class="ti ti-circle-check"></i> ' + msg
+        : '<i class="ti ti-alert-circle"></i> ' + msg;
+      setTimeout(() => { t.className = 'toast'; }, 4000);
+    }
+
+    function addLog(id, item, qty) {
+      document.getElementById('history').style.display = 'block';
+      const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const el = document.createElement('div');
+      el.className = 'log-item';
+      el.innerHTML = `
+        <div class="log-left">
+          <span class="dot"></span>
+          <span class="log-name">${item}</span>
+          <span class="log-qty">× ${qty}</span>
+        </div>
+        <span class="log-time">${id} · ${now}</span>
+      `;
+      document.getElementById('log').prepend(el);
+    }
+
+    async function placeOrder() {
+      const item = document.getElementById('item-input').value.trim();
+      const qty  = parseInt(document.getElementById('qty-input').value);
+      const id   = document.getElementById('id-input').value.trim() || genId();
+
+      if (!item)        { showToast('error', 'Item name is required'); return; }
+      if (!qty || qty < 1) { showToast('error', 'Quantity must be at least 1'); return; }
+
+      const btn = document.getElementById('submit-btn');
+      btn.classList.add('loading');
+      btn.innerHTML = '<i class="ti ti-loader-2"></i> Sending…';
+
+      try {
+        const res = await fetch('http://localhost:8081/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, item, quantity: qty })
+        });
+
+        if (res.ok) {
+          showToast('success', `Order ${id} published to RabbitMQ`);
+          addLog(id, item, qty);
+          document.getElementById('item-input').value = '';
+          document.getElementById('qty-input').value = 1;
+          document.getElementById('id-input').value = '';
+        } else {
+          showToast('error', `Server responded with ${res.status}`);
+        }
+      } catch (e) {
+        showToast('error', 'Could not reach order-service — is it running?');
+      }
+
+      btn.classList.remove('loading');
+      btn.innerHTML = '<i class="ti ti-send"></i> Place order';
+    }
+
+    // Poll consumer service for received messages
+    let knownIds = new Set();
+
+    async function fetchReceivedMessages() {
+      try {
+        const res = await fetch('http://localhost:8082/messages');
+        if (!res.ok) return;
+
+        const orders = await res.json();
+        const container = document.getElementById('received-log');
+        const emptyState = document.getElementById('empty-state');
+
+        if (orders.length > 0 && emptyState) {
+          emptyState.remove();
+        }
+
+        orders.forEach(order => {
+          const key = order.id + '|' + order.item + '|' + order.quantity;
+          if (knownIds.has(key)) return;
+          knownIds.add(key);
+
+          const el = document.createElement('div');
+          el.className = 'log-item';
+          el.innerHTML = `
+            <div class="log-left">
+              <span class="dot consumed"></span>
+              <span class="log-name">${order.item}</span>
+              <span class="log-qty">× ${order.quantity}</span>
+            </div>
+            <span class="log-time">${order.id}</span>
+          `;
+          container.prepend(el);
+        });
+      } catch (e) {
+        // consumer not reachable, silently ignore
+      }
+    }
+
+    // Poll every 3 seconds
+    setInterval(fetchReceivedMessages, 3000);
+    fetchReceivedMessages();
+  </script>
+</body>
+</html>
