@@ -1,7 +1,6 @@
 package gov.iti.jets.producerservice.messaging;
 
 import gov.iti.jets.producerservice.model.Order;
-import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
