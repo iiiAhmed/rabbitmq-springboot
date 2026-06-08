@@ -282,12 +282,7 @@
       <div class="toast" id="toast"></div>
     </div>
 
-    <div class="history" id="history" style="display:none;">
-      <p class="history-title">
-        <i class="ti ti-clock"></i> Sent this session
-      </p>
-      <div class="log" id="log"></div>
-    </div>
+
 
     <!-- Received Messages Section -->
     <p class="eyebrow section-divider"><i class="ti ti-download"></i> consumer-service · localhost:8082</p>
@@ -324,21 +319,7 @@
       setTimeout(() => { t.className = 'toast'; }, 4000);
     }
 
-    function addLog(id, item, qty) {
-      document.getElementById('history').style.display = 'block';
-      const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      const el = document.createElement('div');
-      el.className = 'log-item';
-      el.innerHTML = `
-        <div class="log-left">
-          <span class="dot"></span>
-          <span class="log-name">${item}</span>
-          <span class="log-qty">× ${qty}</span>
-        </div>
-        <span class="log-time">${id} · ${now}</span>
-      `;
-      document.getElementById('log').prepend(el);
-    }
+
 
     async function placeOrder() {
       const item = document.getElementById('item-input').value.trim();
@@ -361,7 +342,7 @@
 
         if (res.ok) {
           showToast('success', `Order ${id} published to RabbitMQ`);
-          addLog(id, item, qty);
+
           document.getElementById('item-input').value = '';
           document.getElementById('qty-input').value = 1;
           document.getElementById('id-input').value = '';
