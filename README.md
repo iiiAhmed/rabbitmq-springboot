@@ -70,25 +70,20 @@ docker compose down
 ## Screenshots
 
 ### 1. Docker Containers Running
-<!-- Screenshot: `docker ps` output showing all 4 containers running -->
+![Docker Containers Running](screenshots/1.JPG)
 
-### 2. Frontend — Place an Order
-<!-- Screenshot: The frontend form at http://localhost with fields filled in -->
+### 2. Frontend — Place and send an Order
+![Frontend — Place and send an Order](screenshots/2.JPG)
 
-### 3. Frontend — Order Sent Successfully
-<!-- Screenshot: The toast message "Order ORD-001 published to RabbitMQ" + the "Sent this session" log -->
+### 3. Frontend — Received Orders
+![Frontend — Received Orders](screenshots/3.JPG)
 
-### 4. Frontend — Received Orders
-<!-- Screenshot: The "Received orders" section at the bottom showing consumed messages with blue dots -->
+### 4. RabbitMQ Management — Queues
+![RabbitMQ Management — Queues](screenshots/4.JPG)
 
-### 5. RabbitMQ Management — Queues
-<!-- Screenshot: http://localhost:15672/#/queues showing order.queue with message activity -->
 
-### 6. RabbitMQ Management — Exchange
-<!-- Screenshot: http://localhost:15672/#/exchanges showing order.exchange and its binding -->
-
-### 7. Consumer Logs
-<!-- Screenshot: `docker logs consumer-service` showing [MY-LOG]: Received order: Order(...) -->
+### 5. Consumer Logs
+![Consumer Logs](screenshots/5.JPG)
 
 ## Project Structure
 
